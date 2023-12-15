@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-pcor*zf=dip2xso_%hy$0it^x+9axwt3xsuf5k-7+jsbhnj$$+
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     'api.aretelending.xyz',
     'app.aretelending.xyz',
 ]
@@ -34,6 +35,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'user',
     'bribe',
     'dashboard',
     'governance',
