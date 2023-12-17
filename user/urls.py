@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path("", views.index),
-    path("latest", views.getWallet),
+    path("check", views.isWallet),
 ]
