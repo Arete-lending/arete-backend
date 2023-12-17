@@ -2,6 +2,10 @@
 
 DeFi Lending Protocol with ve(3, 3) tokenomics
 
+## Endpoint
+
+https://api.aretelending.xyz
+
 ## Test Account
 
 `0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC`
