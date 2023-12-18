@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from web3util.web3util import *
 from web3util.vesting import *
+from web3util.private import *
 from web3util.math import *
 
 first_epoch = datetime.datetime(2023, 11, 7, 0, 0, 0)
@@ -9,14 +10,16 @@ def ATEHeader(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
+    ate = balance(address, 'ate')
+    xate = balance(address, 'xate')
     data = {
         'xATE': {
-            'balance': 1.23,
-            'balanceD': printDollar(14500),
+            'balance': printDollar(wei2Dollar(ate, 'ate')),
+            'balanceD': printDollar(wei2Dollar(ate, 'ate')),
         },
         'ATE': {
-            'balance': 2.34,
-            'balanceD': printDollar(5630),
+            'balance': printDollar(wei2Dollar(xate, 'xate')),
+            'balanceD': printDollar(wei2Dollar(xate, 'xate')),
         }
     }
     return JsonResponse(data)

@@ -6,25 +6,26 @@ import datetime
 
 class PrivateInfo:
     market_names = ['dai', 'link', 'usdc', 'wbtc', 'weth', 'usdt']
-    privates = list()
-    assets = list()
-
-    supplied = 0
-    borrowed = 0
-    supply_apy = 0
-    borrow_apy = 0
-    ltv = 0
-    health_factor = 100
-
-    collateral = 0
-    borrow_power_used = 0
-
-    my_total_voting_power = 0
-    my_vote_power_used = 0
-    total_rewards = 0
-    my_rewards = 0
 
     def __init__(self, account: str):
+        self.privates = list()
+        self.assets = list()
+
+        self.supplied = 0
+        self.borrowed = 0
+        self.supply_apy = 0
+        self.borrow_apy = 0
+        self.ltv = 0
+        self.health_factor = 100
+
+        self.collateral = 0
+        self.borrow_power_used = 0
+
+        self.my_total_voting_power = 0
+        self.my_vote_power_used = 0
+        self.total_rewards = 0
+        self.my_rewards = 0
+        
         for market in self.market_names:
             self.privates.append(PrivateToken(market))
             self.assets.append(Asset(market))
@@ -78,17 +79,18 @@ class PrivateInfo:
 
 
 class PrivateToken:
-    w3 = None
-    asset = ""
-    private = ""
-    name = "BASE"
-    description = "base token"
-    token = "BASE"
-    supply_balance = 0
-    borrow_balance = 0
-    vote = 0
 
     def __init__(self, token: str): 
+        self.w3 = None
+        self.asset = ""
+        self.private = ""
+        self.name = "BASE"
+        self.description = "base token"
+        self.token = "BASE"
+        self.supply_balance = 0
+        self.borrow_balance = 0
+        self.vote = 0
+
         self.name = token.upper()
         self.description = tokenDescription(token)
         self.token = token.upper()

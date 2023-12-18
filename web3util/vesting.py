@@ -4,10 +4,11 @@ from web3util.asset import *
 import datetime
 
 class Vesting:
-    w3 = None
-    vestings = []
 
     def __init__(self, address: str): 
+        self.w3 = None
+        self.vestings = []
+
         info = self.getInformationOfToken()
         infos = self.getInfos(info)
         for info in infos:

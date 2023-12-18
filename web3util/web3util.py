@@ -1,25 +1,7 @@
 import asyncio
 from web3util.json import abi
 
-async def test():
-    from web3 import Web3
-
-    w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545/"))
-    account = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
-
-    # contract
-    conaddr = abi.json['USDC-TestnetMintableERC20-Aave']['address']
-    mintabi = abi.json['USDC-TestnetMintableERC20-Aave']['abi']
-    
-    # execute contract fucntion
-    contract = w3.eth.contract(address=conaddr, abi=mintabi)
-
-    mintPrice = contract.functions.mint(account, 100000000000000000000).call()
-    print(mintPrice)
-    # assetPrice = contract.functions.supply(usdc, 10000000, account, 0).call()
-    # print(assetPrice)
-
-web3_provider_url = "http://127.0.0.1:8545/"
+web3_provider_url = "http://220.75.195.192:22212/"
 
 def getAccount(number: int):
     return abi.accounts[number][0]

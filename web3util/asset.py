@@ -9,28 +9,28 @@ for info_idx in reversed(asset_info_idx):
     asset_info_acc = [info_idx+asset_info_acc[0]] + asset_info_acc
 
 class Asset:
-    w3 = None
-    asset = ""
-    private = ""
-    name = "BASE"
-    description = "base token"
-    token = "BASE"
-    collateral_type = "Open"
-    LTV = 0
-    supply_apy = 0
-    token_incentives = 0
-    base_apy = 0
-    total_supplied = 0
-    borrow_apy = 0
-    total_borrowed = 0
-    available = 0
-
-    total_votes = 0
-    total_bribes = 0
-    bribe_n_interest = 0
-    voting_apr = 0
 
     def __init__(self, token: str): 
+        self.w3 = None
+        self.asset = ""
+        self.private = ""
+        self.name = "BASE"
+        self.description = "base token"
+        self.token = "BASE"
+        self.collateral_type = "Open"
+        self.LTV = 0
+        self.supply_apy = 0
+        self.token_incentives = 0
+        self.base_apy = 0
+        self.total_supplied = 0
+        self.borrow_apy = 0
+        self.total_borrowed = 0
+        self.available = 0
+
+        total_votes = 0
+        total_bribes = 0
+        bribe_n_interest = 0
+        voting_apr = 0
         self.name = token.upper()
         self.description = tokenDescription(token)
         self.token = token.upper()
