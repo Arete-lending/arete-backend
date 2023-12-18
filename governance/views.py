@@ -1,8 +1,9 @@
 from django.http import JsonResponse, HttpResponse
 from web3util.web3util import *
+from web3util.vesting import *
 from web3util.math import *
 
-first_epoch = datetime.date(2023, 11, 7)
+first_epoch = datetime.datetime(2023, 11, 7, 0, 0, 0)
 
 def ATEHeader(request):
     if 'address' not in request.GET:
@@ -11,7 +12,7 @@ def ATEHeader(request):
     data = {
         'xATE': {
             'balance': 1.23,
-            'balacneD': printDollar(14500),
+            'balanceD': printDollar(14500),
         },
         'ATE': {
             'balance': 2.34,
@@ -24,13 +25,17 @@ def listVesting(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    data = [
-        {
-            'xKZA': 3.46,
-            'KZA': 21.69,
-            'etime': printETime(first_epoch),
-        } 
-    ] * 5
+    vesting = Vesting(address)
+    data = list()
+
+    for vest in vesting.vestings:
+        data.append(
+            {
+                'xKZA': round(vest.xATE_vesting, 2),
+                'KZA': round(vest.ATE_output, 2),
+                'etime': printETime(vest.saved_at),
+            } 
+        )
     return JsonResponse(data, safe=False)
 
 def actionForge(request):

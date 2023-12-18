@@ -55,11 +55,35 @@ def abiCandidate(token: str):
     }
     return abi_cand[token]
 
+def tokenDescription(token: str):
+    desc_cand = {
+        'dai': 'DAI Token',
+        'link': 'LINK Token',
+        'usdc': 'USD Coin',
+        'wbtc': 'Wrapped Bitcoin',
+        'weth': 'Wrapped Ethereum Token',
+        'usdt': 'Tether USD',
+        'ate': 'ARETE Token',
+        'xate': 'staked ARETE Token',
+    }
+    return desc_cand[token]
+
+def assetAddress(token: str):
+    addr_cand = {
+        'dai': abi.accounts[18],
+        'link': abi.accounts[17],
+        'usdc': abi.accounts[16],
+        'wbtc': abi.accounts[15],
+        'weth': abi.accounts[14],
+        'usdt': abi.accounts[13],
+        'ate': abi.accounts[12],
+        'xate': abi.accounts[11],
+    }
+    return addr_cand[token]
+
 async def getProvider(account: str):
     from web3 import Web3
     w3 = Web3(Web3.HTTPProvider(web3_provider_url))
-    private_key = findPrivate(account)
-    if private_key == 'error': return None
     w3.eth.default_account = account
     return w3
 

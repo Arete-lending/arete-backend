@@ -1,17 +1,23 @@
 from django.http import JsonResponse, HttpResponse
 from web3util.web3util import *
 from web3util.math import printDollar
-import asyncio
+from web3util.private import PrivateInfo
+from web3util.oracle import *
+from web3util.asset import *
+from market.views import market_names
 
 def dashboardHeader(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
+
+    private = PrivateInfo(address)
+
     data = {
-        "Net": printDollar(1230000),
-        "nAPY": "29.04%",
-        "cLTV": "70%",
-        "HF": "100%",
+        "Net": printDollar(private.supplied),
+        "nAPY": str(round(private.supply_apy, 2)) + "%" if private.supply_apy != 0 else '--',
+        "cLTV": str(round(private.ltv, 2)) + "%" if private.ltv != 0 else '--',
+        "HF": str(private.health_factor) + "%" if private.supplied != 0 else '--',
     }
     return JsonResponse(data)
 
@@ -19,10 +25,13 @@ def headerBorrow(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
+
+    private = PrivateInfo(address)
+
     data = {
-        'balance': printDollar(1740000),
-        'APY': '29.04%',
-        'BPU': '30.00%',
+        'balance': printDollar(private.borrowed),
+        'APY': str(round(private.borrow_apy, 2)) + "%" if private.borrow_apy != 0 else '--',
+        'BPU': str(round(private.borrow_power_used, 2)) + "%" if private.borrow_power_used != 0 else '--',
     }
     return JsonResponse(data)
 
@@ -30,10 +39,13 @@ def headerSupply(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
+
+    private = PrivateInfo(address)
+
     data = {
-        'balance': printDollar(2340000),
-        'APY': '28.45%',
-        'COL': printDollar(1230000),
+        'balance': printDollar(private.supplied),
+        'APY': str(round(private.supply_apy, 2)) + "%" if private.supply_apy != 0 else '--',
+        'COL': printDollar(private.collateral),
     }
     return JsonResponse(data)
 
@@ -41,65 +53,93 @@ def supply(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    data = [
-        {
-            'name': 'DAI',
-            'desc': 'DAI Token',
-            'token': 'DAI',
-            'balance': printDollar(2340000),
-            'ctype': 'Open',
-            'APY': '28.33%',
-            'COL': printDollar(5640000),
-         } 
-    ] * 5
+    
+    private = PrivateInfo(address)
+    
+    data = list()
+    for (asset, private) in zip(private.assets, private.privates):
+        if private.supply_balance == 0: continue
+        balance = token2Dollar(private.supply_balance, asset.token)
+        data.append(
+            {
+                'name': asset.name,
+                'desc': asset.description,
+                'token': asset.token,
+                'balance': printDollar(balance),
+                'ctype': asset.collateral_type,
+                'APY': str(round(asset.supply_apy, 2)) + "%",
+                'COL': printDollar(balance * asset.LTV / 100),
+            } 
+        )
     return JsonResponse(data, safe=False)
 
 def borrow(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    data = [
-        {
-            'asset': 'DAI',
-            'desc': 'DAI Token',
-            'token': 'DAI',
-            'DEBT': printDollar(5670000),
-            'ctype': 'Open',
-            'APY': '28.33%', 
-        } 
-    ] * 5
+    
+    private = PrivateInfo(address)
+
+    data = list()
+    for (asset, private) in zip(private.assets, private.privates):
+        if private.borrow_balance == 0: continue
+        balance = token2Dollar(private.borrow_balance, asset.token)
+        data.append(
+            {
+                'asset': private.name,
+                'desc': private.description,
+                'token': private.token,
+                'DEBT': printDollar(balance),
+                'ctype': asset.collateral_type,
+                'APY': str(round(asset.borrow_apy, 2)) + "%", 
+            } 
+        )
     return JsonResponse(data, safe=False)
 
 def assetsToSupply(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    data = [
-        {
-            'asset': 'DAI',
-            'desc': 'DAI Token',
-            'token': 'DAI',
-            'balance': printDollar(7190000),
-            'ctype': 'Open',
-            'APY': '28.33%', 
-        } 
-    ] * 5
+
+    data = list()
+
+    for market in market_names:
+        bal = balance(address, market)
+        if bal == 0: continue
+        now = Asset(market)
+        data.append(
+            {
+                'asset': now.name,
+                'desc': now.description,
+                'token': now.token,
+                'balance': printDollar(wei2Dollar(bal, now.token)),
+                'ctype': now.collateral_type,
+                'APY': str(round(now.supply_apy, 2)) + "%",
+            }
+        )
     return JsonResponse(data, safe=False)
 
 def assetsToBorrow(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    data = [
-        {
-            'asset': 'DAI',
-            'desc': 'DAI Token',
-            'token': 'DAI',
-            'AV': printDollar(5670000),
-            'ctype': 'Open',
-            'APY': '28.33%', 
-        } 
-    ] * 5
+
+    data = list()
+    private = PrivateInfo(address)
+
+    for (asset, private) in zip(private.assets, private.privates):
+        bal = token2Dollar((private.supply_balance * asset.LTV / 100) - private.borrow_balance, private.token)
+        if bal <= 0: continue
+        data.append(
+            {
+                'asset': asset.name,
+                'desc': asset.description,
+                'token': asset.token,
+                'AV': printDollar(bal),
+                'ctype': asset.collateral_type,
+                'APY': str(round(asset.borrow_apy, 2)) + "%",
+            }
+        )
     return JsonResponse(data, safe=False)
 
 def actionSupply(request):
