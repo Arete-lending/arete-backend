@@ -40,14 +40,14 @@ https://api.aretelending.xyz
 
 ## TODO List
 
-- [-] Supply Action
-- [-] Withdraw Action
-- [-] Borrow Action
-- [-] Repay Action
-- [-] Forge Action
-- [-] Extract Action (+ redesign)
-- [-] Vote Action
-- [-] Bribe Action
-- [-] Dollar to Token (and Wei) function
-- [-] Dollar to xATE in xATE tab
+- [x] Supply Action
+- [x] Withdraw Action
+- [x] Borrow Action
+- [x] Repay Action
+- [x] Forge Action
+- [x] Extract Action (+ redesign)
+- [x] Vote Action
+- [x] Bribe Action
+- [x] Dollar to Token (and Wei) function
+- [x] Dollar to xATE in xATE tab
 - [ ] Dealing with unauthorized wallet
