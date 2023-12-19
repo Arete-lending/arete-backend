@@ -65,7 +65,7 @@ class PrivateInfo:
         # voting
         ate = PrivateToken('ate')
         xate = PrivateToken('xate')
-        self.my_total_voting_power = token2Dollar(ate.supply_balance, 'ate') + token2Dollar(xate.supply_balance, 'xate')
+        self.my_total_voting_power = token2Dollar(xate.supply_balance, 'xate')
 
         total_votes = [token2Dollar(asset.total_votes, 'xate') for asset in self.assets]
         voting_aprs = [asset.voting_apr for asset in self.assets]

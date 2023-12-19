@@ -4,6 +4,7 @@ from web3util.math import printDollar
 from web3util.private import PrivateInfo
 from web3util.oracle import *
 from web3util.asset import *
+from web3util.actions import *
 from market.views import market_names
 
 def dashboardHeader(request):
@@ -146,47 +147,51 @@ def actionSupply(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'asset' not in request.GET:
         return HttpResponse(status=400)
     asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actSupply(address, asset, balance)
     return HttpResponse(status=200)
 
 def actionWithdraw(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'asset' not in request.GET:
         return HttpResponse(status=400)
     asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actWithdraw(address, asset, balance)
     return HttpResponse(status=200)
 
 def actionBorrow(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'asset' not in request.GET:
         return HttpResponse(status=400)
     asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actBorrow(address, asset, balance)
     return HttpResponse(status=200)
 
 def actionRepay(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'asset' not in request.GET:
         return HttpResponse(status=400)
     asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actRepay(address, asset, balance)
     return HttpResponse(status=200)
 

@@ -25,9 +25,9 @@ class Vesting:
         infos = list()
         if info == 0: return infos
         while info >= 10 ** 26:
-            infos.append(info % (10 ** 26))
-            info = info / (10 ** 26)
-        infos.append(info)
+            infos.append(int(info % (10 ** 26)))
+            info = info // (10 ** 26)
+        infos.append(int(info))
         return infos
 
 class VestingIter:
@@ -37,15 +37,15 @@ class VestingIter:
 
     def __init__(self, info: int):
         acc = [26, 20, 14, 0]
+        self.getSavedAt(self.cut(info, acc[2], acc[3]))
         self.getVesting(self.cut(info, acc[0], acc[1]))
         self.getOutput(self.cut(info, acc[1], acc[2]))
-        self.getSavedAt(self.cut(info, acc[2], acc[3]))
 
     def datecut(self, info: int, u: int, d: int):
         uu = 10 ** u
         dd = 10 ** d
         diff = 10 ** (u - d)
-        ret = (info // dd) - (info // uu) * diff
+        ret = int((info // dd) - (info // uu) * diff)
         if ret == 0: return 1
         return ret
 
@@ -65,7 +65,17 @@ class VestingIter:
         self.xATE_vesting = self.sixCount(val)
 
     def getOutput(self, val):
-        self.ATE_output = self.sixCount(val)
+        self.ATE_output = self.interest(self.sixCount(val))
+
+    def interest(self, val):
+        td = datetime.datetime.now() - self.saved_at
+        interest = val
+        if td > datetime.timedelta(days=90):
+            dtd = td - datetime.timedelta(days=90)
+            interest += (val * 0.01 * dtd.days)
+            td = td - dtd
+        interest += (val * 0.005 * td.days)
+        return interest
 
     def getSavedAt(self, val):
         self.saved_at = datetime.datetime(

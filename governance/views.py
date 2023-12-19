@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from web3util.web3util import *
 from web3util.vesting import *
 from web3util.private import *
+from web3util.actions import *
 from web3util.math import *
 
 first_epoch = datetime.datetime(2023, 11, 7, 0, 0, 0)
@@ -14,11 +15,11 @@ def ATEHeader(request):
     xate = balance(address, 'xate')
     data = {
         'xATE': {
-            'balance': printDollar(wei2Dollar(ate, 'ate')),
+            'balance': printDollar(toToken(ate, 'ate'))[1:],
             'balanceD': printDollar(wei2Dollar(ate, 'ate')),
         },
         'ATE': {
-            'balance': printDollar(wei2Dollar(xate, 'xate')),
+            'balance': printDollar(toToken(xate, 'xate'))[1:],
             'balanceD': printDollar(wei2Dollar(xate, 'xate')),
         }
     }
@@ -31,11 +32,12 @@ def listVesting(request):
     vesting = Vesting(address)
     data = list()
 
-    for vest in vesting.vestings:
+    for idx, vest in enumerate(vesting.vestings):
         data.append(
             {
-                'xKZA': round(vest.xATE_vesting, 2),
-                'KZA': round(vest.ATE_output, 2),
+                'index': idx,
+                'xKZA': printDollar(token2Dollar(vest.xATE_vesting, 'xate')),
+                'KZA': printDollar(token2Dollar(vest.ATE_output, 'ate')),
                 'etime': printETime(vest.saved_at),
             } 
         )
@@ -45,23 +47,20 @@ def actionForge(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
-        return HttpResponse(status=400)
-    asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actForge(address, balance)
     return HttpResponse(status=200)
 
 def actionExtract(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'index' not in request.GET:
         return HttpResponse(status=400)
-    asset = request.GET['asset']
-    if 'balance' not in request.GET:
-        return HttpResponse(status=400)
-    balance = request.GET['balance']
+    index = request.GET['index']
+    index = int(request.GET['index'])
+    actExtract(address, index)
     return HttpResponse(status=200)
 

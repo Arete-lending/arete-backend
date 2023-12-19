@@ -3,6 +3,7 @@ from web3util.web3util import *
 from web3util.math import *
 from web3util.private import *
 from web3util.oracle import *
+from web3util.actions import *
 
 def bribeContent(request):
     if 'address' not in request.GET:
@@ -35,11 +36,12 @@ def actionBribe(request):
     if 'address' not in request.GET:
         return HttpResponse(status=400)
     address = request.GET['address']
-    if 'assest' not in request.GET:
+    if 'asset' not in request.GET:
         return HttpResponse(status=400)
     asset = request.GET['asset']
     if 'balance' not in request.GET:
         return HttpResponse(status=400)
-    balance = request.GET['balance']
+    balance = float(request.GET['balance'])
+    actBribe(address, asset, balance)
     return HttpResponse(status=200)
 

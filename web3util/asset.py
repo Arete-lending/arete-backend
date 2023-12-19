@@ -27,10 +27,11 @@ class Asset:
         self.total_borrowed = 0
         self.available = 0
 
-        total_votes = 0
-        total_bribes = 0
-        bribe_n_interest = 0
-        voting_apr = 0
+        self.total_votes = 0
+        self.total_bribes = 0
+        self.bribe_n_interest = 0
+        self.voting_apr = 0
+
         self.name = token.upper()
         self.description = tokenDescription(token)
         self.token = token.upper()
