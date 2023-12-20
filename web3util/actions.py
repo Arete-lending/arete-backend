@@ -32,6 +32,8 @@ def actRepay(address: str, token: str, balance: float):
     setPosition(getAsset(token), token, asset_info_acc[4], asset_info_acc[5], backToSix(val+balance))
 
 def actForge(address: str, amount: float):
+    vesting = Vesting(address)
+    if len(vesting.vestings) >= 3: return
     burn(address, 'ate', int(toWei(amount, 'ate')))
     asset = abi.accounts[10][0]
     val = balance(asset, 'xate')

@@ -26,7 +26,7 @@ def bribeContent(request):
                 'TVP': str(round(asset.total_votes/vt*100, 2))+ '%',
                 'TB': printDollar(token2Dollar(asset.total_bribes, 'xate')),
                 'TBC': str(round(asset.total_bribes, 2)) + ' ' + 'xATE',
-                'B&I': printDollar(asset.bribe_n_interest),
+                'B&I': str(round(asset.bribe_n_interest, 2)) + ' ' + 'xATE',
                 'VAPR': str(round(asset.voting_apr, 2)) + '%',
             } 
         )
