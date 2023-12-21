@@ -42,6 +42,7 @@ def actForge(address: str, amount: float):
     private = PrivateToken('xate')
     nextval = private.supply_balance + int(amount/10)
     setPosition(getAsset('xate'), 'xate', asset_info_acc[10], asset_info_acc[11], backToSix(nextval))
+    val = balance(asset, 'xate')
 
 def actExtract(address: str, index: int):
     asset = abi.accounts[10][0]
@@ -119,7 +120,7 @@ def backToSix(number):
     elif number >= 1000:
         number = round(number / 1000, 2)
         msb = 1
-    return msb * (pow(10, 5)) + number * 100
+    return int(msb) * (pow(10, 5)) + int(number * 100)
 
 def setPosition(address: str, token: str, u: int, d: int, number: int):
     number = int(number)
